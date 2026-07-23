@@ -162,6 +162,10 @@ class NavigationResource extends Resource
 
     public static function getModel(): string
     {
+        if (\Filament\Facades\Filament::getCurrentPanel() === null) {
+            return Navigation::class;
+        }
+
         return FilamentNavigation::get()->getModel();
     }
 }
