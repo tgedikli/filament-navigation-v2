@@ -1,17 +1,58 @@
 # Build structured navigation menus in Filament.
 
-> [!WARNING]
-> This package is no longer maintained. Please feel free to fork the package and update accordingly and re-release.
+> [!NOTE]
+> Bu repo, [ryangjchandler/filament-navigation](https://github.com/ryangjchandler/filament-navigation) paketinin [tgedikli/filament-navigation-v2](https://github.com/tgedikli/filament-navigation-v2) fork’udur. Upstream artık bakımda değil; projelerimiz için gerekli düzeltmeler burada tutulur.
 
 This plugin for Filament provides a `Navigation` resource that lets you build structural navigation menus with a clean drag-and-drop UI.
 
-## Installation
+## Fork farkları (upstream’e göre)
 
-Begin by installing this package via Composer:
+Upstream, Filament panel henüz boot olmamışken (`Filament::getCurrentPanel() === null`) `FilamentNavigation::get()` çağırarak model/resource çözümlemeye çalışıyor. Bu durum panel boot / provider kayıt aşamasında hata üretebiliyor.
+
+Bu fork’ta şu sınıflara null-panel fallback eklendi:
+
+- `NavigationResource::getModel()`
+- `CreateNavigation::getResource()`
+- `EditNavigation::getResource()`
+- `ListNavigations::getResource()`
+
+Panel yoksa sırasıyla `Navigation::class` / `NavigationResource::class` döner; panel varsa mevcut plugin API’si (`FilamentNavigation::get()`) aynen kullanılır.
+
+Güncel release tag: **`v1.0.0`**
+
+## Installation (bu fork)
+
+Paket adı Packagist ile aynı kalır (`ryangjchandler/filament-navigation`); Composer’ın fork’tan çekmesi için VCS repository tanımı gerekir.
+
+`composer.json` örneği:
+
+```json
+{
+    "require": {
+        "ryangjchandler/filament-navigation": "^1.0.0"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/tgedikli/filament-navigation-v2"
+        }
+    ]
+}
+```
+
+Ardından:
 
 ```sh
-composer require ryangjchandler/filament-navigation
+composer update ryangjchandler/filament-navigation
 ```
+
+veya sıfırdan:
+
+```sh
+composer require ryangjchandler/filament-navigation:^1.0.0
+```
+
+> `repositories` bloğu `composer require` öncesinde `composer.json` içinde tanımlı olmalıdır; aksi halde Composer Packagist’teki (bakımsız) upstream sürümünü çözümler.
 
 Run migrations.
 
