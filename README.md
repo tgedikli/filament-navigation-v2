@@ -18,18 +18,48 @@ Bu fork’ta şu sınıflara null-panel fallback eklendi:
 
 Panel yoksa sırasıyla `Navigation::class` / `NavigationResource::class` döner; panel varsa mevcut plugin API’si (`FilamentNavigation::get()`) aynen kullanılır.
 
-Güncel release tag: **`v1.0.0`**
+## Sürüm seçimi ve uyumluluk
+
+Bu fork'un Composer paket adı **`ryangjchandler/filament-navigation`** olarak kalır. Paket ana sürümü Filament ana sürümüyle aynı değildir; Filament 4 için bu fork'un `^2.0` hattı seçilir.
+
+| Filament | Laravel | En düşük PHP | Paket sürümü | Composer komutu |
+| --- | --- | --- | --- | --- |
+| 3.x | 10.x | 8.1 | `^1.0` | `composer require ryangjchandler/filament-navigation:"^1.0"` |
+| 3.x | 11.x | 8.2 | `^1.0` | `composer require ryangjchandler/filament-navigation:"^1.0"` |
+| 4.x | 11.28+ (11.x) | 8.3 | `^2.0` | `composer require ryangjchandler/filament-navigation:"^2.0"` |
+
+- `main`, Filament 3 için **v1.0.0 / 1.x** hattıdır; Laravel 10 ve 11 bağımlılıklarını kabul eder.
+- `2.x` bakım dalı, Filament 4 için **v2.0.0 ve sonrası** sürümleri içerir. `illuminate/contracts:^11.28` ve PHP `^8.3` gerektirir; Laravel 12 ve üzerini kapsamaz.
+- Bu fork'un Filament 2 için yayımlanmış bir sürümü yoktur. Filament 4 hattı PHP 8.3 / Laravel 11 altında test edilmiştir; önceki hat geriye uyumluluk için korunur.
+
+PHP alt sınırları paket ve framework gereksinimlerini birlikte gösterir; [Filament 3 gereksinimleri](https://filamentphp.com/docs/3.x/panels/installation) ve [Laravel sürüm tablosu](https://laravel.com/docs/11.x/releases#support-policy) de geçerlidir.
 
 ## Installation (bu fork)
 
-Paket adı Packagist ile aynı kalır (`ryangjchandler/filament-navigation`); Composer’ın fork’tan çekmesi için VCS repository tanımı gerekir.
+Paket adı Packagist ile aynı kalır; Composer'ın bu fork'tan indirmesi için **require komutundan önce** VCS repository tanımı gerekir. Uygulamanızda henüz yoksa ekleyin:
 
-`composer.json` örneği:
+```sh
+composer config repositories.filament-navigation vcs https://github.com/tgedikli/filament-navigation-v2
+```
+
+Ardından tablodaki uygun komutlardan **yalnız birini** kullanın. Filament 3 + Laravel 10/11 için:
+
+```sh
+composer require ryangjchandler/filament-navigation:"^1.0"
+```
+
+Filament 4 + Laravel 11.28+ / PHP 8.3 için bunun yerine:
+
+```sh
+composer require ryangjchandler/filament-navigation:"^2.0"
+```
+
+Filament 4 kurulumunda oluşacak `composer.json` bölümü:
 
 ```json
 {
     "require": {
-        "ryangjchandler/filament-navigation": "^1.0.0"
+        "ryangjchandler/filament-navigation": "^2.0"
     },
     "repositories": [
         {
@@ -40,19 +70,9 @@ Paket adı Packagist ile aynı kalır (`ryangjchandler/filament-navigation`); Co
 }
 ```
 
-Ardından:
+Filament 3 projesinde aynı VCS kaydıyla `require` aralığını `^1.0` seçin. `@dev` veya `dev-main` yerine etiketli sürümleri kullanın; `^1.0` ve `^2.0` kendi ana sürüm hatlarında kalır.
 
-```sh
-composer update ryangjchandler/filament-navigation
-```
-
-veya sıfırdan:
-
-```sh
-composer require ryangjchandler/filament-navigation:^1.0.0
-```
-
-> `repositories` bloğu `composer require` öncesinde `composer.json` içinde tanımlı olmalıdır; aksi halde Composer Packagist’teki (bakımsız) upstream sürümünü çözümler.
+> VCS kaydı eklenmezse Composer aynı ada sahip upstream paketini çözümleyebilir. Filament ana sürüm geçişinde uygulama ve diğer eklentiler de uyarlanmalıdır; yalnız bu paketin sürümünü değiştirmek yeterli değildir.
 
 Run migrations.
 
