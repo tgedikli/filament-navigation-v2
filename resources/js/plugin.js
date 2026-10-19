@@ -1,3 +1,4 @@
+import '../css/plugin.css'
 import Sortable from 'sortablejs'
 
 document.addEventListener('alpine:initializing', () => {

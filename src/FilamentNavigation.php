@@ -7,10 +7,12 @@ use Filament\Contracts\Plugin;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource;
 use RyanChandler\FilamentNavigation\Models\Navigation;
 
+/** @phpstan-consistent-constructor */
 class FilamentNavigation implements Plugin
 {
     protected string $model = Navigation::class;
@@ -19,7 +21,7 @@ class FilamentNavigation implements Plugin
 
     protected array $itemTypes = [];
 
-    protected array | Closure $extraFields = [];
+    protected array|Closure $extraFields = [];
 
     public function getId(): string
     {
@@ -34,7 +36,7 @@ class FilamentNavigation implements Plugin
         return $this;
     }
 
-    /** @param class-string<\Illuminate\Database\Eloquent\Model> $model */
+    /** @param class-string<Model> $model */
     public function usingModel(string $model): static
     {
         $this->model = $model;
@@ -42,7 +44,7 @@ class FilamentNavigation implements Plugin
         return $this;
     }
 
-    public function itemType(string $name, array | Closure $fields, ?string $slug = null): static
+    public function itemType(string $name, array|Closure $fields, ?string $slug = null): static
     {
         $this->itemTypes[$slug ?? Str::slug($name)] = [
             'name' => $name,
@@ -52,7 +54,7 @@ class FilamentNavigation implements Plugin
         return $this;
     }
 
-    public function withExtraFields(array | Closure $schema): static
+    public function withExtraFields(array|Closure $schema): static
     {
         $this->extraFields = $schema;
 
@@ -72,12 +74,16 @@ class FilamentNavigation implements Plugin
 
     public static function make(): static
     {
-        return new static();
+        return new static;
     }
 
     public static function get(): static
     {
-        return filament('navigation');
+        // navigation kimliği bu eklentinin panelde kayıtlı örneğini döndürür.
+        /** @var static $plugin */
+        $plugin = filament('navigation');
+
+        return $plugin;
     }
 
     public function getModel(): string
@@ -90,7 +96,7 @@ class FilamentNavigation implements Plugin
         return $this->resource;
     }
 
-    public function getExtraFields(): array | Closure
+    public function getExtraFields(): array|Closure
     {
         return $this->extraFields;
     }

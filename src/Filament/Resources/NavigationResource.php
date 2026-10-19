@@ -2,27 +2,30 @@
 
 namespace RyanChandler\FilamentNavigation\Filament\Resources;
 
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\View;
 use Filament\Forms\Components\ViewField;
-use Filament\Forms\Form;
-use Filament\Forms\Set;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource\Pages\CreateNavigation;
+use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource\Pages\EditNavigation;
+use RyanChandler\FilamentNavigation\Filament\Resources\NavigationResource\Pages\ListNavigations;
 use RyanChandler\FilamentNavigation\FilamentNavigation;
 use RyanChandler\FilamentNavigation\Models\Navigation;
 
 class NavigationResource extends Resource
 {
-    protected static ?string $navigationIcon = 'heroicon-o-bars-3';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-bars-3';
 
     protected static bool $showTimestamps = true;
 
@@ -37,10 +40,10 @@ class NavigationResource extends Resource
         static::$showTimestamps = ! $condition;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Section::make('')->schema([
                     TextInput::make('name')
                         ->label(__('filament-navigation::filament-navigation.attributes.name'))
@@ -62,7 +65,7 @@ class NavigationResource extends Resource
                         ->view('filament-navigation::navigation-builder'),
                 ])
                     ->columnSpan([
-                        12,
+                        'default' => 12,
                         'lg' => 8,
                     ]),
                 Group::make([
@@ -73,18 +76,18 @@ class NavigationResource extends Resource
                             ->unique(column: 'handle', ignoreRecord: true),
                         View::make('filament-navigation::card-divider')
                             ->visible(static::$showTimestamps),
-                        Placeholder::make('created_at')
+                        TextEntry::make('created_at')
                             ->label(__('filament-navigation::filament-navigation.attributes.created_at'))
                             ->visible(static::$showTimestamps)
-                            ->content(fn (?Navigation $record) => $record ? $record->created_at->translatedFormat(Table::$defaultDateTimeDisplayFormat) : new HtmlString('&mdash;')),
-                        Placeholder::make('updated_at')
+                            ->dateTime()->placeholder('—'),
+                        TextEntry::make('updated_at')
                             ->label(__('filament-navigation::filament-navigation.attributes.updated_at'))
                             ->visible(static::$showTimestamps)
-                            ->content(fn (?Navigation $record) => $record ? $record->updated_at->translatedFormat(Table::$defaultDateTimeDisplayFormat) : new HtmlString('&mdash;')),
+                            ->dateTime()->placeholder('—'),
                     ]),
                 ])
                     ->columnSpan([
-                        12,
+                        'default' => 12,
                         'lg' => 4,
                     ]),
             ])
@@ -140,7 +143,7 @@ class NavigationResource extends Resource
                     ->dateTime()
                     ->sortable(),
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()
                     ->icon(null),
                 DeleteAction::make()
@@ -154,15 +157,15 @@ class NavigationResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => NavigationResource\Pages\ListNavigations::route('/'),
-            'create' => NavigationResource\Pages\CreateNavigation::route('/create'),
-            'edit' => NavigationResource\Pages\EditNavigation::route('/{record}'),
+            'index' => ListNavigations::route('/'),
+            'create' => CreateNavigation::route('/create'),
+            'edit' => EditNavigation::route('/{record}'),
         ];
     }
 
     public static function getModel(): string
     {
-        if (\Filament\Facades\Filament::getCurrentPanel() === null) {
+        if (Filament::getCurrentOrDefaultPanel() === null) {
             return Navigation::class;
         }
 
