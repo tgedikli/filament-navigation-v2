@@ -14,7 +14,7 @@ class CreateNavigation extends CreateRecord
 
     public static function getResource(): string
     {
-        if (Filament::getCurrentPanel() === null) {
+        if (Filament::getCurrentOrDefaultPanel() === null) {
             return NavigationResource::class;
         }
 

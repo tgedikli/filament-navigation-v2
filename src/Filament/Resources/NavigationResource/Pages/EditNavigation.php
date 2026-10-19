@@ -14,7 +14,7 @@ class EditNavigation extends EditRecord
 
     public static function getResource(): string
     {
-        if (Filament::getCurrentPanel() === null) {
+        if (Filament::getCurrentOrDefaultPanel() === null) {
             return NavigationResource::class;
         }
 
