@@ -2,6 +2,8 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
+    bootstrapFiles:
+        - bootstrap/app.php
     level: 5
     paths:
         - src
@@ -11,4 +13,3 @@ parameters:
     reportUnmatchedIgnoredErrors: true
     checkOctaneCompatibility: true
     checkModelProperties: true
-    checkMissingIterableValueType: false

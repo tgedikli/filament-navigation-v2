@@ -14,7 +14,9 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@PSR12' => true,
         'array_syntax' => ['syntax' => 'short'],
-        'ordered_imports' => ['sort_algorithm' => 'alpha'],
+        'ordered_imports' => ['sort_algorithm' => 'alpha', 'imports_order' => ['class', 'function', 'const']],
+        // Pint ile aynı dosyada çelişen parantez dönüşümü yapılmaz.
+        'new_with_parentheses' => false,
         'no_unused_imports' => true,
         'not_operator_with_successor_space' => true,
         'trailing_comma_in_multiline' => true,
